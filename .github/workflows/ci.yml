@@ -21,20 +21,21 @@ jobs:
         run: |
           echo "Hello I'm $GITHUB_ACTOR"
           echo "I'm running on $GITHUB_RUNNER_NAME"
+  #job2 : chạy file index.js trên ubuntu
   run-js:
-#job2 :  chạy file index.js  trên ubuntu 
-  name: run javasrip file
-  runs-on: ubuntu-latest
-  needs: logs-job # chạy sau khi logs-job kết thúc 
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v3 #gói tải nodejs
-      with:
-        node-version: "22"
-    - name : run index #chạy lệnh node js
-      run: node index.js   
+    name: run javascript file
+    runs-on: ubuntu-latest
+    needs: logs-job # chạy sau khi logs-job kết thúc
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3 #gói tải nodejs
+        with:
+          node-version: "22"
+
+      - name: run index #chạy lệnh node js
+        run: node index.js
     
     

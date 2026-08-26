@@ -21,6 +21,7 @@ jobs:
         run: |
           echo "Hello I'm $GITHUB_ACTOR"
           echo "I'm running on $GITHUB_RUNNER_NAME"
+
   #job2 : chạy file index.js trên ubuntu
   run-js:
     name: run javascript file
@@ -37,5 +38,34 @@ jobs:
 
       - name: run index #chạy lệnh node js
         run: node index.js
-    
-    
+
+  #job3 : build và test Spring Boot app
+  spring-test: # ID của job, dùng để tham chiếu trong needs
+    name: Build Spring Boot App # tên hiển thị trên GitHub Actions UI
+    runs-on: ubuntu-latest # chạy trên máy ảo Ubuntu mới nhất
+    needs: logs-job # chờ logs-job xong mới chạy, nếu logs-job fail thì bỏ qua
+    defaults:
+      run:
+        working-directory: spring-test/spring-boot-app # thư mục mặc định cho tất cả lệnh run bên dưới
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3 # clone code từ repo về runner (bắt buộc vì mỗi job dùng máy ảo riêng)
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v3 # action có sẵn để cài Java
+        with:
+          java-version: "17" # Spring Boot 3.x yêu cầu tối thiểu Java 17
+          distribution: "temurin" # bản OpenJDK miễn phí của Eclipse, phổ biến nhất
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew # cấp quyền thực thi cho gradle wrapper (bắt buộc trên Linux)
+
+      - name: Build with Gradle
+        run: ./gradlew build # compile code → chạy test → đóng gói JAR. Nếu lỗi thì dừng tại đây
+
+      - name: Run Spring Boot App (test start)
+        run: |
+          ./gradlew bootRun &          # khởi động Spring Boot, dấu & để chạy nền không chặn lệnh sau
+          sleep 15                      # đợi 15 giây cho app khởi động xong
+          curl -f http://localhost:8080 || exit 1   # gửi request test, nếu thất bại thì exit 1 → job FAIL
+          echo "Spring Boot app is running successfully!"  # nếu thành công thì in thông báo

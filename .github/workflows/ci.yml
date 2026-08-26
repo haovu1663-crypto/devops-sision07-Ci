@@ -33,7 +33,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3 #gói tải nodejs
         with:
-          node-version: "22"
+          node-version: "24"
 
       - name: run index #chạy lệnh node js
         run: node index.js

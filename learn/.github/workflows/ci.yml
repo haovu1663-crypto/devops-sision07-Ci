@@ -1,0 +1,40 @@
+# định nghĩa cho 1 tác vụ tự động (nếu có nhiều tác vụ thì sẽ tạo nhiều file yml)
+name: CI Pipeline Basic #name CI
+
+#Sự kiện kích hoạt CI
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+
+jobs:
+  #job1 : ghi logs ra trên cmd của ubuntu
+  logs-job: #tên job 1
+    name: Log to screen # tên công việc
+    runs-on: ubuntu-latest # chạy trên nền tảng ubuntu
+    steps: # các bước làm
+      - name: Checkout code #tên của bước 1
+        uses: actions/checkout@v3 # gọi tới gói có sẵn để lấy code mới nhất
+
+      - name: Printf system info
+        run: |
+          echo "Hello I'm $GITHUB_ACTOR"
+          echo "I'm running on $GITHUB_RUNNER_NAME"
+  run-js:
+#job2 :  chạy file index.js  trên ubuntu 
+  name: run javasrip file
+  runs-on: ubuntu-latest
+  needs: logs-job # chạy sau khi logs-job kết thúc 
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3 #gói tải nodejs
+      with:
+        node-version: "22"
+    - name : run index #chạy lệnh node js
+      run: node index.js   
+    
+    

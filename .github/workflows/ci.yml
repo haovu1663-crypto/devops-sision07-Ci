@@ -15,12 +15,12 @@ jobs:
     runs-on: ubuntu-latest # chạy trên nền tảng ubuntu
     steps: # các bước làm
       - name: Checkout code #tên của bước 1
-        uses: actions/checkout@v3 # gọi tới gói có sẵn để lấy code mới nhất
+        uses: actions/checkout@v4 # gọi tới gói có sẵn để lấy code mới nhất
 
       - name: Printf system info
         run: |
           echo "Hello I'm $GITHUB_ACTOR"
-          echo "I'm running on $GITHUB_RUNNER_NAME"
+          echo "I'm running on $RUNNER_NAME"
 
   #job2 : chạy file index.js trên ubuntu
   run-js:
@@ -29,10 +29,10 @@ jobs:
     needs: logs-job # chạy sau khi logs-job kết thúc
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3 #gói tải nodejs
+        uses: actions/setup-node@v4 #gói tải nodejs
         with:
           node-version: "24"
 
@@ -49,10 +49,10 @@ jobs:
         working-directory: spring-test/spring-boot-app # thư mục mặc định cho tất cả lệnh run bên dưới
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3 # clone code từ repo về runner (bắt buộc vì mỗi job dùng máy ảo riêng)
+        uses: actions/checkout@v4 # clone code từ repo về runner (bắt buộc vì mỗi job dùng máy ảo riêng)
 
       - name: Setup JDK 17
-        uses: actions/setup-java@v3 # action có sẵn để cài Java
+        uses: actions/setup-java@v4 # action có sẵn để cài Java
         with:
           java-version: "17" # Spring Boot 3.x yêu cầu tối thiểu Java 17
           distribution: "temurin" # bản OpenJDK miễn phí của Eclipse, phổ biến nhất
